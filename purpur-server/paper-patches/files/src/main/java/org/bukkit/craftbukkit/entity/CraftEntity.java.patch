@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-@@ -114,6 +_,18 @@
+@@ -114,6 +_,84 @@
          this.entityType = CraftEntityType.minecraftToBukkit(entity.getType());
      }
  
@@ -15,6 +15,72 @@
 +        getHandle().immuneToFire = fireImmune;
 +    }
 +    // Purpur end - Fire Immunity API
++
++    // Purpur start - Entity Visibility API
++    @Override
++    public void setGlobalNoTrack(boolean noTrack) {
++        getHandle().globalNoTrack = noTrack;
++    }
++
++    @Override
++    public boolean isGlobalNoTrack() {
++        return getHandle().globalNoTrack;
++    }
++
++    @Override
++    public void hideFromPlayer(@org.jetbrains.annotations.NotNull org.bukkit.entity.Player player) {
++        com.google.common.base.Preconditions.checkNotNull(player, "player");
++        net.minecraft.world.entity.Entity handle = getHandle();
++        if (handle.noTrackForPlayers == null) {
++            handle.noTrackForPlayers = java.util.concurrent.ConcurrentHashMap.newKeySet();
++        }
++        handle.noTrackForPlayers.add(player.getUniqueId());
++    }
++
++    @Override
++    public void hideFromPlayers(@org.jetbrains.annotations.NotNull java.util.Collection<? extends org.bukkit.entity.Player> players) {
++        com.google.common.base.Preconditions.checkNotNull(players, "players");
++        net.minecraft.world.entity.Entity handle = getHandle();
++        if (handle.noTrackForPlayers == null) {
++            handle.noTrackForPlayers = java.util.concurrent.ConcurrentHashMap.newKeySet();
++        }
++        for (org.bukkit.entity.Player player : players) {
++            if (player != null) handle.noTrackForPlayers.add(player.getUniqueId());
++        }
++    }
++
++    @Override
++    public void showToPlayer(@org.jetbrains.annotations.NotNull org.bukkit.entity.Player player) {
++        com.google.common.base.Preconditions.checkNotNull(player, "player");
++        net.minecraft.world.entity.Entity handle = getHandle();
++        if (handle.noTrackForPlayers != null) {
++            handle.noTrackForPlayers.remove(player.getUniqueId());
++        }
++    }
++
++    @Override
++    public void clearNoTrack() {
++        net.minecraft.world.entity.Entity handle = getHandle();
++        if (handle.noTrackForPlayers != null) {
++            handle.noTrackForPlayers.clear();
++        }
++        handle.globalNoTrack = false;
++    }
++
++    @Override
++    public boolean isNoTrackedFor(@org.jetbrains.annotations.NotNull org.bukkit.entity.Player player) {
++        com.google.common.base.Preconditions.checkNotNull(player, "player");
++        net.minecraft.world.entity.Entity handle = getHandle();
++        return handle.globalNoTrack || (handle.noTrackForPlayers != null && handle.noTrackForPlayers.contains(player.getUniqueId()));
++    }
++
++    @Override
++    public @org.jetbrains.annotations.NotNull java.util.Set<java.util.UUID> getNoTrackPlayers() {
++        net.minecraft.world.entity.Entity handle = getHandle();
++        if (handle.noTrackForPlayers == null) return java.util.Collections.emptySet();
++        return java.util.Collections.unmodifiableSet(handle.noTrackForPlayers);
++    }
++    // Purpur end - Entity Visibility API
 +
      public static <T extends Entity> CraftEntity getEntity(CraftServer server, T entity) {
          Preconditions.checkArgument(entity != null, "Unknown entity");

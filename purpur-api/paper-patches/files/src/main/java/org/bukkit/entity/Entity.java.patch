@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/entity/Entity.java
 +++ b/src/main/java/org/bukkit/entity/Entity.java
-@@ -1322,4 +_,59 @@
+@@ -1322,4 +_,116 @@
       */
      void broadcastHurtAnimation(@NotNull java.util.Collection<Player> players);
      // Paper end - broadcast hurt animation
@@ -59,4 +59,61 @@
 +     */
 +    void setImmuneToFire(@Nullable Boolean fireImmune);
 +    // Purpur end - Fire Immunity API
++
++    // Purpur start - Entity Visibility API
++    /**
++     * Sets whether this entity should be hidden from all players at the tracker level.
++     *
++     * @param noTrack true to hide from all players
++     */
++    void setGlobalNoTrack(boolean noTrack);
++
++    /**
++     * Returns whether this entity is globally hidden from all players at the tracker level.
++     *
++     * @return true if globally hidden
++     */
++    boolean isGlobalNoTrack();
++
++    /**
++     * Prevents this entity from being tracked/sent to the given player.
++     *
++     * @param player the player to hide from
++     */
++    void hideFromPlayer(@NotNull Player player);
++
++    /**
++     * Prevents this entity from being tracked/sent to all players in the collection.
++     *
++     * @param players the players to hide from
++     */
++    void hideFromPlayers(@NotNull java.util.Collection<? extends Player> players);
++
++    /**
++     * Allows this entity to be tracked by the given player again.
++     *
++     * @param player the player to show to
++     */
++    void showToPlayer(@NotNull Player player);
++
++    /**
++     * Clears all per-player and global no-track state for this entity.
++     */
++    void clearNoTrack();
++
++    /**
++     * Returns whether this entity is hidden from the given player at the tracker level.
++     *
++     * @param player the player to check
++     * @return true if hidden from this player
++     */
++    boolean isNoTrackedFor(@NotNull Player player);
++
++    /**
++     * Returns the set of player UUIDs that this entity is hidden from.
++     *
++     * @return unmodifiable set of UUIDs
++     */
++    @NotNull java.util.Set<java.util.UUID> getNoTrackPlayers();
++    // Purpur end - Entity Visibility API
  }
