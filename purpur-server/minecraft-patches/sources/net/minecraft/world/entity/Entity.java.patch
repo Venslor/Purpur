@@ -36,7 +36,7 @@
      public final io.papermc.paper.entity.activation.ActivationType activationType = io.papermc.paper.entity.activation.ActivationType.activationTypeFor(this); // Paper - EAR 2/tracking ranges
 +    public @Nullable Boolean immuneToFire = null; // Purpur - Fire immune API
 +    // Purpur start - Entity Visibility API
-+    public @Nullable java.util.Set<java.util.UUID> noTrackForPlayers = null;
++    public java.util.@Nullable Set<java.util.UUID> noTrackForPlayers = null;
 +    public boolean globalNoTrack = false;
 +    // Purpur end - Entity Visibility API
      // Paper start - EAR 2
